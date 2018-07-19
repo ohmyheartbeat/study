@@ -53,16 +53,17 @@
                 X.box = $("#page-box");
             },
             "crawl": function () {
+                X.removeIframe();
                 $.ajax({
                     type: "POST",
                     dateType: "json",
                     url: "/crawl",
                     data: $("#crawl_info").serialize(),
                     success: function (result) {
+                        console.log(result);
 
                         $.each(result,function (key,values) {
                             values.forEach(function (value) {
-                                console.log(X.box);
                                 X.createIframe(value);
 
 
@@ -79,7 +80,7 @@
                 X.box.append(x);
             },
             "removeIframe":function () {
-                X.box.remove();
+                X.box.empty();
             }
         };
         $(document).ready(X.initBox);
