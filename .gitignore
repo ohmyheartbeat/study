@@ -1,0 +1,17 @@
+*.jpg
+.vscode
+*.pyc
+*.pyo
+.idea
+.gradle
+
+build
+
+*.properties
+
+*.iml
+*.db
+*.so
+*.o
+*.log
+/gateway/data_process/*.py
