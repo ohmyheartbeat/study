@@ -116,8 +116,6 @@ class CrawlUrl(object):
         :return: 所有包含关键字的urls
         """
         urls = []
-        print type(key_words)
-        print type(limit_time)
         if isinstance(key_words, list) and isinstance(limit_time, list):
             urls = cls._multi_two_crawl(url, key_words, limit_time)
         elif isinstance(key_words, list) and isinstance(limit_time, str):

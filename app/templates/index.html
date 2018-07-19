@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>爬取相关网页</title>
     <script src="../static/jquery-3.1.1.min.js"></script>
+    <link href="../static/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
         .button{
             height: 40px;
@@ -15,13 +16,42 @@
             user-select:None;
             color: cadetblue;
         }
+        .container{
+            margin-top: 40px;
+            width: 100%;
+        }
         .button:active{
             background-color: #f0f0f0;
             color: green;
         }
+        .input-box{
+            border: none;
+        }
+        .input-container{
+            box-shadow: 0 0 3px 4px #9d9d9d;
+            display: inline-block;
+        }
+        .title{
+            display: inline-block;
+            font-size: 18px;
+            line-height: 40px;
+        }
+        .ipt-c{
+            height: 40px;
+        }
+        .iframe-box{
+            width: 30%;
+            height: 400px;
+            box-shadow: 0 0 2px 2px #9d9d9d;
+            margin-left: 3%;
+        }
     </style>
     <script type="text/javascript">
         var X = {
+            "box":null,
+            "initBox":function () {
+                X.box = $("#page-box");
+            },
             "crawl": function () {
                 $.ajax({
                     type: "POST",
@@ -29,29 +59,62 @@
                     url: "/crawl",
                     data: $("#crawl_info").serialize(),
                     success: function (result) {
-                        console.log(result)
+
+                        $.each(result,function (key,values) {
+                            values.forEach(function (value) {
+                                console.log(X.box);
+                                X.createIframe(value);
+
+
+                            })
+                        })
+
                     }
                 })
+            },
+            "createIframe":function (url) {
+                var x = document.createElement("iframe");
+                x.setAttribute("class","iframe-box");
+                x.setAttribute("src",url);
+                X.box.append(x);
+            },
+            "removeIframe":function () {
+                X.box.remove();
             }
-        }
+        };
+        $(document).ready(X.initBox);
     </script>
 </head>
 <body>
-    <div class="container">
+    <div class="container row">
         <form id="crawl_info" name="search" action="##" method="post">
-            <div>
-                <p>关键词：<input name="key_word" type="text" id="key_word"/></p>
+            <div class="col-md-3 ipt-c">
+                <p class="title">关键词：</p>
+                <div class="input-container">
+                    <input class="input-box" name="key_word" type="text" id="key_word"/>
+                </div>
             </div>
-            <div>
-                <p>起止时间：<input name="limit_time" type="text" id="limit_time"/></p>
+            <div class="col-md-3 ipt-c">
+                <p class="title">起止时间：</p>
+                <div class="input-container">
+                    <input class="input-box" name="limit_time" type="text" id="limit_time"/>
+                </div>
             </div>
-            <div>
-                <p>爬取的网站：<input name="url" type="text" id="url"/></p>
+            <div class="col-md-3 ipt-c">
+                <p class="title">爬取的网站：</p>
+                <div class="input-container">
+                    <input class="input-box" name="url" type="text" id="url"/>
+                </div>
+
             </div>
-            <div>
+            <div class="col-md-3">
                 <div class="button" onclick="X.crawl()">爬取</div>
             </div>
         </form>
+    </div>
+    <div style="width: 100%;height: 10px;background-color: #269abc;margin-top: 10px"></div>
+    <div class="page-show" id="page-box">
+
     </div>
 </body>
 </html>
