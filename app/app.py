@@ -14,7 +14,7 @@ from flask.wrappers import Response
 from main.crawl_url import CrawlUrl
 import sys
 import os
-
+import requests
 # Other imports
 
 if getattr(sys, 'frozen', False):
@@ -30,6 +30,7 @@ def crawl_page():
     url = request.form["url"].encode("utf-8")
     limit_time = request.form["limit_time"].encode("utf-8")
     urls = CrawlUrl.start_crawl(url,key_word,limit_time)
+    print(CrawlUrl.results_test)
     return Response(json.dumps(urls), content_type="application/json")
 
 @app.route("/", methods=['GET'])
