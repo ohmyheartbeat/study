@@ -28,10 +28,10 @@ class CrawlUrl(object):
         """
         urls = []
         url_json = {}
-        for key_word,limit_time in key_words, limit_times:
+        for key_word,limit_time in zip(key_words, limit_times):
             url_res = cls._single_crawl(url, key_word, limit_time)
             url_json[key_word] = url_res
-            urls.append(url_json)
+        urls.append(url_json)
         return urls
 
     @classmethod
@@ -48,7 +48,7 @@ class CrawlUrl(object):
         for key_word in key_words:
             url_res = cls._single_crawl(url, key_word, limit_time)
             url_json[key_word] = url_res
-            urls.append(url_json)
+        urls.append(url_json)
         return urls
 
     @classmethod
@@ -117,21 +117,20 @@ class CrawlUrl(object):
         :param limit_time: 起止时间
         :return: 所有包含关键字的urls
         """
-        key_words = str(key_words.decode("utf-8"))
-        limit_time = str(limit_time.decode("utf-8"))
-        url = url.decode("utf-8")
+        if isinstance(key_words, bytes):
+            key_words = str(key_words.decode("utf-8"))
+        if isinstance(limit_time, bytes):
+            limit_time = str(limit_time.decode("utf-8"))
+        if isinstance(url, bytes):
+            url = url.decode("utf-8")
         urls = []
         if isinstance(key_words, list) and isinstance(limit_time, list):
             urls = cls._multi_two_crawl(url, key_words, limit_time)
-            CrawlUrl.results_test = 1
         elif isinstance(key_words, list) and isinstance(limit_time, str):
             urls = cls._multi_single_crawl(url, key_words, limit_time)
-            CrawlUrl.results_test = 2
         elif isinstance(key_words, str) and isinstance(limit_time, str):
             urls = cls._single_crawl(url, key_words, limit_time)
             urls = {key_words:urls}
-            CrawlUrl.results_test = 3
-        CrawlUrl.results_test = 4
         return urls
 
 
