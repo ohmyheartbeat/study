@@ -9,13 +9,14 @@
 import json
 import requests
 import re
+import bs4
 from bs4 import BeautifulSoup
 
 class CrawlUrl(object):
     """
     根据给定的url，关键字，起止时间来爬取页面
     """
-
+    results_test = 0
     @classmethod
     def _multi_two_crawl(cls, url, key_words, limit_times):
         """
@@ -27,10 +28,10 @@ class CrawlUrl(object):
         """
         urls = []
         url_json = {}
-        for key_word,limit_time in key_words, limit_times:
+        for key_word,limit_time in zip(key_words, limit_times):
             url_res = cls._single_crawl(url, key_word, limit_time)
             url_json[key_word] = url_res
-            urls.append(url_json)
+        urls.append(url_json)
         return urls
 
     @classmethod
@@ -47,7 +48,7 @@ class CrawlUrl(object):
         for key_word in key_words:
             url_res = cls._single_crawl(url, key_word, limit_time)
             url_json[key_word] = url_res
-            urls.append(url_json)
+        urls.append(url_json)
         return urls
 
     @classmethod
@@ -77,9 +78,10 @@ class CrawlUrl(object):
     def _parse_page(cls, url, start_time, stop_time):
         #print url
         url_result = []
+        results_test = url
         response = requests.get(url)
         response.encoding = response.apparent_encoding
-        soup = BeautifulSoup(response.content,"html.parser")
+        soup = bs4.BeautifulSoup(response.content,"html.parser")
         key_word = soup.title.contents[0][:2]
         results = soup.find_all(class_="globalRight")
         for result in results:
@@ -115,6 +117,12 @@ class CrawlUrl(object):
         :param limit_time: 起止时间
         :return: 所有包含关键字的urls
         """
+        if isinstance(key_words, bytes):
+            key_words = str(key_words.decode("utf-8"))
+        if isinstance(limit_time, bytes):
+            limit_time = str(limit_time.decode("utf-8"))
+        if isinstance(url, bytes):
+            url = url.decode("utf-8")
         urls = []
         if isinstance(key_words, list) and isinstance(limit_time, list):
             urls = cls._multi_two_crawl(url, key_words, limit_time)
@@ -125,14 +133,4 @@ class CrawlUrl(object):
             urls = {key_words:urls}
         return urls
 
-if __name__ == "__main__":
-    url = "http://www.feedtrade.com.cn/market/"
-    key_words = ["大豆","玉米"]
-    #key_words = "大豆"
-    limit_time = "0718-0719"
-    urls = CrawlUrl.start_crawl(url, key_words, limit_time)
-    for url_json in urls:
-        key_word = url_json.keys()[0]
-        print len(url_json[key_word])
-        for url in url_json[key_word]:
-            print url
+

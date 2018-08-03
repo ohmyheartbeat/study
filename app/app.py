@@ -12,15 +12,31 @@ from flask import Flask
 from flask import request,render_template
 from flask.wrappers import Response
 from main.crawl_url import CrawlUrl
+import sys
+import os
+import requests
+# Other imports
 
-app = Flask(__name__)
+if getattr(sys, 'frozen', False):
+    template_folder = os.path.join(sys._MEIPASS, 'templates')
+    static_folder = os.path.join(sys._MEIPASS, 'static')
+    app = Flask(__name__, template_folder=template_folder,static_folder=static_folder)
+else:
+    app = Flask(__name__)
 
 @app.route("/crawl",methods=['POST','GET'])
 def crawl_page():
-    key_word = request.form["key_word"].encode("utf-8")
-    url = request.form["url"].encode("utf-8")
-    limit_time = request.form["limit_time"].encode("utf-8")
+    if "key_word" in request.form:
+        key_word = request.form["key_word"].encode("utf-8")
+        url = request.form["url"].encode("utf-8")
+        limit_time = request.form["limit_time"].encode("utf-8")
+    else:
+        data_json = json.loads(request.get_data().decode("utf-8"))
+        url = data_json["url"]
+        key_word = data_json["key_word"]
+        limit_time = data_json["limit_time"]
     urls = CrawlUrl.start_crawl(url,key_word,limit_time)
+
     return Response(json.dumps(urls), content_type="application/json")
 
 @app.route("/", methods=['GET'])
