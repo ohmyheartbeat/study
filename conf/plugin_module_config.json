@@ -1,0 +1,31 @@
+{
+  "copartner": {
+    "tmr": {
+      "enable": true
+    },
+    "pedometer": {
+      "enable": true,
+      "frequency": 1
+    },
+    "station": {
+      "port": "com4",
+      "baudrate": 9600,
+      "PenetrateEnable": true
+    }
+  },
+  "scr": {
+    "pedometer": {
+      "enable": 1,
+      "frequency": 1,
+      "output_file_path": "C:/Users/Administrator/Desktop/heatdetect.txt",
+      "input_file_path": "bbb.asd",
+      "ip": "127.0.0.1"
+    },
+    "data_exchange_path": "aaa.exe"
+  },
+  "gea": {
+    "installation_path": "C:/DairyPln",
+    "exe_name": "DPDataExchange.exe",
+    "input_file_path": "../input"
+  }
+}
